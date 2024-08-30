@@ -18,20 +18,33 @@
     i18n = {
         defaultLocale = "ja_JP.UTF-8";
         inputMethod = {
-            enabled = "fcitx5";
-            fcitx5.addons = [pkgs.fcitx5-mozc];
-            fcitx5.waylandFrontend = true;
+            enable = true;
+            type = "fcitx5";
+            fcitx5.addons = with pkgs; [
+                fcitx5-mozc
+                fcitx5-gtk
+            ];
         };
     };
 
     services.xserver = {
         enable = true;
         xkb.layout = "us";
+        dpi = 220;
         desktopManager = {
             xterm.enable = false;
+            wallpaper.mode = "fill";
+            runXdgAutostartIfNone = true;
         };
+
         displayManager = {
-            defaultSession = "none+i3";
+            lightdm.enable = true;
+
+            # AARCH64: For now, on Apple Silicon, we must manually set the
+            # display resolution. This is a known issue with VMware Fusion.
+            sessionCommands = ''
+                ${pkgs.xorg.xset}/bin/xset r rate 180 40
+            '';
         };
 
         windowManager.i3 = {
@@ -44,15 +57,42 @@
         };
     };
 
+    services.displayManager = {
+        defaultSession = "none+i3";
+    };
+
     # Add ~/.local/bin to PATH
     environment.localBinInPath = true;
+
+    # Manage fonts
+    fonts = {
+        fontDir.enable = true;
+
+        packages = with pkgs; [
+            "${pkgs.fetchzip {
+                url = "https://github.com/yuru7/udev-gothic/releases/download/v2.0.0/UDEVGothic_NF_v2.0.0.zip";
+                sha256 = "00zw8yr9zl27v98sav4dwwrhvrzfrl3y0bzzyqq2nnx5i3jayy5v";
+            }}"
+        ];
+    };
 
     # Install packages in global
     environment.systemPackages = [
         pkgs.wget
         pkgs.curl
         pkgs.git
-        pkgs.firefox
         pkgs.xclip
+        pkgs.gnumake
+
+        # This is needed for the vmware user tools clipboard to work.
+        # You can test if you don't need this by deleting this and seeing
+        # if the clipboard sill works.
+        pkgs.gtkmm3
+
+        # For hypervisors that support auto-resize, this script forces it.
+        # I've noticed not everyone listens to the udev events so this is a hack.
+        (pkgs.writeShellScriptBin "xrandr-auto" ''
+            xrandr --output Virtual-1 --auto
+        '')
     ];
 }

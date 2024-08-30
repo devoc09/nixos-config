@@ -14,4 +14,20 @@
 
     # This work through our custom module imported above
     virtualisation.vmware.guest.enable = true;
+
+    boot.loader = {
+        # Use the systemd-boot EFI boot loader
+        systemd-boot.enable = true;
+        systemd-boot.consoleMode = "0";
+
+        # VMware, Parallels both only support this being 0 otherwise you see
+        # "error switching console mode" on boot.
+        efi.canTouchEfiVariables = true;
+    };
+
+    # Define hostname
+    networking.hostName = "dev";
+
+    # Don't require password for sudo
+    security.sudo.wheelNeedsPassword = false;
 }

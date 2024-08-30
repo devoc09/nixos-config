@@ -1,0 +1,6 @@
+bind main R !git rebase -i %(commit)
+bind diff R !git rebase -i %(commit)
+bind main D !sh -c "git difftool %(commit)~ %(commit)"
+bind status P !git push origin HEAD
+bind status D !rm %(file)
+set wrap-lines = yes

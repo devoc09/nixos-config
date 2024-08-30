@@ -1,0 +1,79 @@
+#--------------------------------------------------------------------
+# Font settings
+#--------------------------------------------------------------------
+font_family      family="UDEV Gothic NFLG"
+font_size 20.0
+bold_font        auto
+italic_font      no
+bold_italic_font no
+
+#--------------------------------------------------------------------
+# Experiences
+#--------------------------------------------------------------------
+scrollback_lines 20000
+
+#--------------------------------------------------------------------
+# Cursor
+#--------------------------------------------------------------------
+cursor_shape block
+cursor_shape_unfocused hollow
+cursor_blink_interval 0
+
+#--------------------------------------------------------------------
+# Key bindings
+#--------------------------------------------------------------------
+# Clipboard
+map super+v             paste_from_clipboard
+map super+c             copy_or_interrupt
+
+# Miscellaneous
+map super+equal      increase_font_size
+map super+minus    decrease_font_size
+map super+0 restore_font_size
+
+# Window
+map super+n new_os_window_with_cwd
+
+#--------------------------------------------------------------------
+# Theme
+#--------------------------------------------------------------------
+# Tab
+tab_bar_edge top
+tab_bar_style powerline
+
+foreground            #d2cdf4
+background            #333333
+selection_foreground  #333333
+selection_background  #fffacd
+
+# black
+color0   #333333
+color8   #485890
+
+# red
+color1   #ff5682
+color9   #c24163
+
+# green
+color2   #7fd06e
+color10  #6eb35f
+
+# yellow
+color3   #f771be
+color11  #ca5c9c
+
+# blue
+color4   #00dbea
+color12  #00919b
+
+# magenta
+color5   #9b8fcb
+color13  #9372af
+
+# cyan
+color6   #ffd982
+color14  #c3a664
+
+# white
+color7   #d2cdf4
+color15  #b8b8ba
