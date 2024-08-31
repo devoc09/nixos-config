@@ -51,12 +51,15 @@
         userEmail = "takumi.katase@devoc.ninja";
         extraConfig = {
             init.defaultBranch = "main";
+            gpg.format = "ssh";
+            commit.gpgsign = true;
+            ghq.root = "~/go/src";
+            user.signingkey = "~/.ssh/id_ed25519.pub";
         };
     };
 
     programs.ssh = {
         enable = true;
-        addKeysToAgent = "yes";
     };
 
     programs.bash = {
@@ -104,6 +107,10 @@
     programs.go = {
         enable = true;
         goPath = "go";
+    };
+
+    programs.keychain = {
+        enable = true;
     };
 
     home.stateVersion = "24.05";

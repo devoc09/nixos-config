@@ -1,4 +1,4 @@
-{ config, pkgs, pkgs-2405, inputs, ...}: {
+{ config, pkgs, nixpkgs-unstable, inputs, ...}: {
     # Since we're using fish as our shell
     programs.fish.enable = true;
 
@@ -18,8 +18,7 @@
     i18n = {
         defaultLocale = "ja_JP.UTF-8";
         inputMethod = {
-            enable = true;
-            type = "fcitx5";
+            enabled = "fcitx5";
             fcitx5.addons = with pkgs; [
                 fcitx5-mozc
                 fcitx5-gtk

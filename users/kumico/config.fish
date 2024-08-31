@@ -1,6 +1,16 @@
 # disable welcome message
 set -g -x fish_greeting
 
+# Automatically load ssh-agent environment variables.
+if test -z "$SSH_AUTH_SOCK"
+    eval (ssh-agent -c)
+    set -Ux SSH_AUTH_SOCK $SSH_AUTH_SOCK
+    set -Ux SSH_AGENT_PID $SSH_AGENT_PID
+end
+
+if command -v keychain > /dev/null
+    eval (keychain --eval --quiet ~/.ssh/id_rsa)
+end
 
 function fish_prompt --description 'define iteractive shell prompt'
     # insert new line befor prompt

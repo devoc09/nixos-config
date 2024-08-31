@@ -2,8 +2,8 @@
     description = "NixOS systems and tools by kumico";
 
     inputs = {
-        nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-        nixpkgs-2405.url = "github:NixOS/nixpkgs/nixos-24.05";
+        nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+        nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
         neovim-nightly-overlay = {
             url = "github:nix-community/neovim-nightly-overlay";
@@ -15,13 +15,13 @@
         };
     };
 
-    outputs = { self, nixpkgs, nixpkgs-2405, home-manager, ... }@inputs:
+    outputs = { self, nixpkgs, nixpkgs-unstable, home-manager, ... }@inputs:
     {
         nixosConfigurations = {
             vm-aarch64 = nixpkgs.lib.nixosSystem rec {
                 system = "aarch64-linux";
                 specialArgs = {
-                    pkgs-2405 = import nixpkgs-2405 {
+                    pkgs-unstable = import nixpkgs-unstable {
                         inherit system;
                         config.allowUnfree = true;
                     };
