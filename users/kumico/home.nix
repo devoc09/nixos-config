@@ -55,7 +55,7 @@
     };
 
     programs.ssh = {
-        eable = true;
+        enable = true;
         addKeysToAgent = "yes";
     };
 
@@ -99,6 +99,11 @@
         defaultEditor = true;
         vimAlias = true;
         viAlias = true;
+    };
+
+    programs.go = {
+        enable = true;
+        goPath = "go";
     };
 
     home.stateVersion = "24.05";
