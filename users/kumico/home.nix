@@ -1,4 +1,4 @@
-{ lib, config, pkgs, ... }: {
+{ inputs, lib, config, pkgs, ... }: {
     home.username = "kumico";
     home.homeDirectory = "/home/kumico";
 
@@ -90,7 +90,7 @@
 
     programs.neovim = {
         enable = true;
-        # package = neovim-nightly.packages.${pkgs.system}.default;
+        package = inputs.neovim-nightly-overlay.packages.${pkgs.system}.default;
         defaultEditor = true;
         vimAlias = true;
         viAlias = true;

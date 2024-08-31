@@ -5,9 +5,9 @@
         nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
         nixpkgs-2405.url = "github:NixOS/nixpkgs/nixos-24.05";
 
-        # neovim-nightly-overlay = {
-        #     url = "github:nix-community/neovim-nightly-overlay";
-        # };
+        neovim-nightly-overlay = {
+            url = "github:nix-community/neovim-nightly-overlay";
+        };
 
         home-manager = {
             url = "github:nix-community/home-manager/release-24.05";
@@ -33,6 +33,9 @@
                         home-manager.useGlobalPkgs = true;
                         home-manager.useUserPackages = true;
                         home-manager.users.kumico = import ./users/kumico/home.nix;
+                        home-manager.extraSpecialArgs = {
+                            inherit inputs;
+                        };
                     }
                 ];
             };
