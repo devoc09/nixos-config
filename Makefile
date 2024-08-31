@@ -65,11 +65,11 @@ vm/switch:
 
 switch:
 	$(MAKE) copy
-	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake ".#${NIXNAME}"
+	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake "/etc/nixos#${NIXNAME}"
 
 test:
 	$(MAKE) copy
-	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild test --flake ".#$(NIXNAME)"
+	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild test --flake "/etc/nixos#$(NIXNAME)"
 
 copy:
 	rsync -av \
