@@ -64,7 +64,19 @@ vm/switch:
 	"
 
 switch:
+	$(MAKE) copy
 	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake ".#${NIXNAME}"
 
 test:
+	$(MAKE) copy
 	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild test --flake ".#$(NIXNAME)"
+
+copy:
+	rsync -av \
+		--exclude='vendor/' \
+		--exclude='.git/' \
+		--exclude='.git-crypt/' \
+		--exclude='README.md' \
+		--exclude='Makefile' \
+		--exclude='iso/' \
+		$(MAKEFILE_DIR)/ /etc/nixos
