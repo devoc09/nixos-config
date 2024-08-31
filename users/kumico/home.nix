@@ -54,6 +54,11 @@
         };
     };
 
+    programs.ssh = {
+        eable = true;
+        addKeysToAgent = "yes";
+    };
+
     programs.bash = {
         enable = true;
         shellOptions = [];
