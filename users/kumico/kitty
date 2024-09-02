@@ -1,11 +1,11 @@
 #--------------------------------------------------------------------
 # Font settings
 #--------------------------------------------------------------------
-font_family      family="UDEV Gothic 35NFLG"
-font_size 18.0
+font_family      UDEV Gothic NFLG
+font_size 20.0
 bold_font        auto
-italic_font      no
-bold_italic_font no
+italic_font      auto
+bold_italic_font auto
 
 #--------------------------------------------------------------------
 # Experiences

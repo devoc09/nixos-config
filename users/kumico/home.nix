@@ -15,6 +15,11 @@
     # Disable warning
     home.enableNixpkgsReleaseCheck = false;
 
+    # Add PATH
+    home.sessionPath = [
+    	"$HOME/go/bin"
+    ];
+
     #------------------------------------------------
     # Packages
     #------------------------------------------------
@@ -54,12 +59,14 @@
             gpg.format = "ssh";
             commit.gpgsign = true;
             ghq.root = "~/go/src";
-            user.signingkey = "~/.ssh/id_ed25519.pub";
+            user.signingkey = "~/.ssh/id_rsa.pub";
+	    url."git@github.com:".insteadOf = "https://github.com";
         };
     };
 
     programs.ssh = {
         enable = true;
+	addKeysToAgent = "yes";
     };
 
     programs.bash = {
@@ -76,6 +83,7 @@
         shellAliases = {
             pbcopy = "xclip -selection clipboard";
             pbpaste = "xclip -o -selection clipboard";
+	    glog = "git log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(r) %C(bold blue)<%an>%Creset' --abbrev-commit --date=relative";
         };
     };
 
