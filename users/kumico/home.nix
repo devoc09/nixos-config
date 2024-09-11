@@ -35,6 +35,69 @@
       sha256 = "sha256-gCm7m96PkZyrgjmt7Efc+NMZKStAq1zr7JRCYOgGDuE=";
     };
   };
+  hop = pkgs.vimUtils.buildVimPlugin {
+    name = "hop.nvim";
+    src = pkgs.fetchFromGitHub {
+      owner = "smoka7";
+      repo = "hop.nvim";
+      rev = "master";
+      sha256 = "sha256-hNo4iqssFjvaWN65cqo/NyuwYzgKiIjwsqFzk2EG/h4=";
+    };
+  };
+  nvim-cmp = pkgs.vimUtils.buildVimPlugin {
+    name = "nvim-cmp";
+    src = pkgs.fetchFromGitHub {
+      owner = "hrsh7th";
+      repo = "nvim-cmp";
+      rev = "main";
+      sha256 = "sha256-NcodgUp8obTsjgc+5j2dKr0f3FelYikQTJngfZXRZzo=";
+    };
+  };
+  cmp-nvim-lsp = pkgs.vimUtils.buildVimPlugin {
+    name = "cmp-nvim-lsp";
+    src = pkgs.fetchFromGitHub {
+      owner = "hrsh7th";
+      repo = "cmp-nvim-lsp";
+      rev = "main";
+      sha256 = "sha256-CT1+Z4XJBVsl/RqvJeGmyitD6x7So0ylXvvef5jh7I8=";
+    };
+  };
+  cmp-path = pkgs.vimUtils.buildVimPlugin {
+    name = "cmp-path";
+    src = pkgs.fetchFromGitHub {
+      owner = "hrsh7th";
+      repo = "cmp-path";
+      rev = "main";
+      sha256 = "sha256-thppiiV3wjIaZnAXmsh7j3DUc6ceSCvGzviwFUnoPaI=";
+    };
+  };
+  cmp-buffer = pkgs.vimUtils.buildVimPlugin {
+    name = "cmp-buffer";
+    src = pkgs.fetchFromGitHub {
+      owner = "hrsh7th";
+      repo = "cmp-buffer";
+      rev = "main";
+      sha256 = "sha256-dG4U7MtnXThoa/PD+qFtCt76MQ14V1wX8GMYcvxEnbM=";
+    };
+  };
+  nvim-snippy = pkgs.vimUtils.buildVimPlugin {
+    name = "nvim-snippy";
+    src = pkgs.fetchFromGitHub {
+      owner = "dcampos";
+      repo = "nvim-snippy";
+      rev = "master";
+      sha256 = "sha256-RVtL7qgvE16P1iv/CO8ZhMIzTj6znHbIdgk3mQJBINg=";
+    };
+  };
+  cmp-snippy = pkgs.vimUtils.buildVimPlugin {
+    name = "cmp-snippy";
+    src = pkgs.fetchFromGitHub {
+      owner = "dcampos";
+      repo = "cmp-snippy";
+      rev = "master";
+      sha256 = "sha256-suw8AGXLi48hB49otZlS+DzbhwPDC9ql34dX3ufLnNA=";
+    };
+  };
 in {
   home.username = "kumico";
   home.homeDirectory = "/home/kumico";
@@ -341,15 +404,154 @@ in {
         },
       }
 
+      -- Motion
+      require('hop').setup({ multi_window = true })
+      vim.api.nvim_set_keymap('n', 'f', ':HopChar1<CR>', { noremap = true })
+
+      -- Snippet
+      require('snippy').setup({})
+
+      -- Compression
+      local cmp = require('cmp')
+      local snippy = require('snippy')
+      cmp.setup({
+        preselect = { none = true },
+        sources = cmp.config.sources {
+          { name = 'nvim_lsp' },
+          { name = 'buffer' },
+          { name = 'path' },
+          { name = 'snippy' },
+        },
+        mapping = cmp.mapping.preset.insert({
+          ['<C-k>'] = cmp.mapping(function(original)
+            if cmp.visible() then
+              if snippy.can_expand() then
+                snippy.expand()
+              else
+                cmp.confirm({ select = true })
+              end
+            else
+              original()
+            end
+          end),
+          ['<C-n>'] = cmp.mapping(function(original)
+            if snippy.can_jump(1) then
+              snippy.next()
+            elseif cmp.visible() then
+              cmp.select_next_item()
+            else
+              original()
+            end
+          end, {'i', 's'}),
+          ['<C-p>'] = cmp.mapping(function(original)
+            if snippy.can_jump(-1) then
+              snippy.previous()
+            elseif cmp.visible() then
+              cmp.select_prev_item()
+            else
+              original()
+            end
+          end, {'i', 's'}),
+        }),
+        snippet = {
+          expand = function(args)
+            snippy.expand_snippet(args.body)
+          end,
+        },
+      })
+
+      -- Language Server
+      vim.opt.hidden = true
+      local nvim_lsp = require("lspconfig")
+
+      -- Use an on_attach function to only map the following keys
+      -- after the language server attaches to the current buffer
+      local on_attach = function(client, bufnr)
+        local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+
+        -- Mappings.
+        local opts = { noremap = true, silent = true }
+        -- buf_set_keymap("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
+        buf_set_keymap("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>", opts)
+        -- buf_set_keymap("n", "gh", "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
+        -- buf_set_keymap("n", "gt", "<cmd>lua vim.lsp.buf.type()<CR>", opts)
+        -- buf_set_keymap("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>", opts)
+        -- buf_set_keymap("n", "<Leader>k", "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
+        -- buf_set_keymap("n", "gn", "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+        buf_set_keymap("n", "<Leader>e", "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+
+        -- format on save
+        if client.server_capabilities.documentFormattingProvider then
+          vim.api.nvim_create_autocmd("BufWritePre", {
+            group = vim.api.nvim_create_augroup("Format", { clear = true }),
+            buffer = bufnr,
+            callback = function() vim.lsp.buf.format(nil, nil, true, nil, nil, nil) end
+          })
+        end
+      end
+
+      local capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+      nvim_lsp['gopls'].setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        cmd = { "gopls", "serve" },
+        settings = {
+          gopls = {
+            analyses = {
+              unusedparams = true,
+            },
+            staticcheck = true,
+          },
+        },
+      }
+      nvim_lsp['rust_analyzer'].setup {
+        on_attach = on_attach,
+        capabilities = capabilities,
+        settings = {
+          ['rust-analyzer'] = {
+            diagnostic = { enable = false, }
+          }
+        },
+      }
+      nvim_lsp['lua_ls'].setup {
+        settings = {
+          Lua = {
+            runtime = {
+              version = 'LuaJIT',
+              path = vim.split(package.path, ';')
+            },
+            workspace = {
+              checkThirdParty = false,
+              library = { [vim.fn.expand('$VIMRUNTIME/lua')] = true, [vim.fn.expand('$VIMRUNTIME/lua/vim/lsp')] = true },
+            },
+          }
+        },
+      }
+
+      -- format on save
+      vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
+        pattern = { '*.lua', '*.rs', '*.go' },
+        callback = function() vim.lsp.buf.format({ timeout = 1500, async = false }) end,
+      })
+
     '';
     plugins = with pkgs; [
       vimPlugins.nvim-treesitter
       vimPlugins.nvim-web-devicons
+      vimPlugins.nvim-lspconfig
 
       # custom plugins
       lualine
       lflops
       gitsigns
+      hop
+      nvim-cmp
+      cmp-nvim-lsp
+      cmp-path
+      cmp-buffer
+      nvim-snippy
+      cmp-snippy
     ];
   };
 
