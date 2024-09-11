@@ -64,10 +64,12 @@ vm/switch:
 	"
 
 switch:
+	$(MAKE) fmt
 	$(MAKE) copy
 	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild switch --flake "/etc/nixos#${NIXNAME}"
 
 test:
+	$(MAKE) fmt
 	$(MAKE) copy
 	sudo NIXPKGS_ALLOW_UNSUPPORTED_SYSTEM=1 nixos-rebuild test --flake "/etc/nixos#$(NIXNAME)"
 
@@ -80,3 +82,6 @@ copy:
 		--exclude='Makefile' \
 		--exclude='iso/' \
 		$(MAKEFILE_DIR)/ /etc/nixos
+
+fmt:
+	nix fmt . --no-write-lock-file
