@@ -5,6 +5,8 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
 
+    zig.url = "github:mitchellh/zig-overlay";
+
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
     };
@@ -21,11 +23,19 @@
     nixpkgs-unstable,
     home-manager,
     ...
-  } @ inputs: {
+  } @ inputs: let
+    overlays = [
+      inputs.zig.overlays.default
+    ];
+  in {
     formatter.aarch64-linux = nixpkgs.legacyPackages.aarch64-linux.alejandra;
     nixosConfigurations = {
       vm-aarch64 = nixpkgs.lib.nixosSystem rec {
         system = "aarch64-linux";
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = overlays;
+        };
         specialArgs = {
           pkgs-unstable = import nixpkgs-unstable {
             inherit system;

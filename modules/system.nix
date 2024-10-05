@@ -95,7 +95,6 @@
     pkgs.gtkmm3
 
     # for setup c compiler & cross compiling
-    # pkgs.zig
     pkgs.gcc
 
     # For hypervisors that support auto-resize, this script forces it.

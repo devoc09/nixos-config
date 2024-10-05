@@ -46,6 +46,10 @@ return {
         },
       },
     }
+    nvim_lsp['zls'].setup {
+      on_attach = on_attach,
+      capabilities = capabilities,
+    }
     nvim_lsp['rust_analyzer'].setup {
       on_attach = on_attach,
       capabilities = capabilities,
@@ -72,7 +76,7 @@ return {
 
     -- format on save
     vim.api.nvim_create_autocmd({ 'BufWritePre' }, {
-      pattern = { '*.lua', '*.rs' },
+      pattern = { '*.lua', '*.rs', '*.zig' },
       callback = function() vim.lsp.buf.format({ timeout = 1500, async = false }) end,
     })
 
