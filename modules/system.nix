@@ -48,7 +48,7 @@
       # AARCH64: For now, on Apple Silicon, we must manually set the
       # display resolution. This is a known issue with VMware Fusion.
       sessionCommands = ''
-        ${pkgs.xorg.xset}/bin/xset r rate 180 40
+        ${pkgs.xorg.xset}/bin/xset r rate 220 40
       '';
     };
 
@@ -93,6 +93,10 @@
     # You can test if you don't need this by deleting this and seeing
     # if the clipboard sill works.
     pkgs.gtkmm3
+
+    # for setup c compiler & cross compiling
+    # pkgs.zig
+    pkgs.gcc
 
     # For hypervisors that support auto-resize, this script forces it.
     # I've noticed not everyone listens to the udev events so this is a hack.
