@@ -42,12 +42,12 @@ tab_bar_edge top
 tab_bar_style powerline
 
 foreground            #d2cdf4
-background            #333333
-selection_foreground  #333333
+background            #0c172a
+selection_foreground  #0c172a
 selection_background  #fffacd
 
 # black
-color0   #333333
+color0   #0c172a
 color8   #485890
 
 # red
